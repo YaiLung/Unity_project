@@ -2,14 +2,15 @@ using UnityEngine;
 
 namespace EnemyNamespace
 {
-    public class Enemy : MonoBehaviour
+    public class EnemyHealth
     {
-        [SerializeField] private float maxHealth = 100f; // Максимальное здоровье
         private float currentHealth;
+        private Enemy enemy;
 
-        private void Awake()
+        public EnemyHealth(float maxHealth, Enemy enemy)
         {
-            currentHealth = maxHealth; // Устанавливаем стартовое здоровье
+            currentHealth = maxHealth;
+            this.enemy = enemy;
         }
 
         public void TakeDamage(float damage)
@@ -26,7 +27,7 @@ namespace EnemyNamespace
         private void Die()
         {
             Debug.Log("Enemy died!");
-            Destroy(gameObject); // Удаляем объект
+            GameObject.Destroy(enemy.gameObject); // Удаляем объект врага
         }
     }
 }

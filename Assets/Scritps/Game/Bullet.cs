@@ -1,26 +1,51 @@
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+namespace BulletNamespace
 {
-    public float damage = 10f; // Урон пули
-    public float lifetime = 3f; // Время жизни пули
-
-    private void Start()
+    public class Bullet : MonoBehaviour
     {
-        Destroy(gameObject, lifetime); // Удаляем пулю через несколько секунд
-    }
+        public float speed = 10f;
+        public float damage = 10f;
+        public float lifetime = 3f;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Enemy")) // Проверяем, если пуля попала во врага
+        private Vector3 direction = Vector3.forward; // По умолчанию пуля летит вперёд
+
+        private void Start()
         {
-            EnemyNamespace.Enemy enemy = other.GetComponent<EnemyNamespace.Enemy>();
-            if (enemy != null)
+            Destroy(gameObject, lifetime);
+        }
+
+        private void Update()
+        {
+            transform.position += direction * speed * Time.deltaTime;
+        }
+
+        public void SetDirection(Vector3 newDirection)
+        {
+            direction = newDirection.normalized; // Нормализация вектора
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Enemy"))
             {
-                enemy.TakeDamage(damage);
+                var enemy = other.GetComponent<EnemyNamespace.Enemy>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(damage);
+                }
+                Destroy(gameObject);
             }
 
-            Destroy(gameObject); // Уничтожаем пулю при попадании
+            if (other.CompareTag("Player"))
+            {
+                var player = other.GetComponent<PlayerNameSpace.Player>();
+                if (player != null)
+                {
+                    player.TakeDamage(damage);
+                }
+                Destroy(gameObject);
+            }
         }
     }
 }

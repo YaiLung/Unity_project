@@ -32,6 +32,11 @@ namespace PlayerNameSpace
                 attackModule.Attack();
             }
         }
+
+        public void TakeDamage(float amount) // Добавили метод
+        {
+            healthModule.TakeDamage(amount);
+        }
     }
 }
 
