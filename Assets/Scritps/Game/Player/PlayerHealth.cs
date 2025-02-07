@@ -1,39 +1,22 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 namespace PlayerNameSpace
 {
-    public class PlayerHealth
+    public class PlayerHealth : Health
     {
-        public float MaxHealth { get; private set; }
-        public float CurrentHealth { get; private set; }
+        [SerializeField] private int startHealth = 100;
 
-        public PlayerHealth(float maxHealth)
+        private void Start()
         {
-            MaxHealth = maxHealth;
-            CurrentHealth = maxHealth;
+            maxHealth = startHealth;
+            currentHealth = maxHealth;
         }
 
-        public void TakeDamage(float amount)
+        protected override void Die()
         {
-            CurrentHealth -= amount;
-            Debug.Log($"Player took {amount} damage. Current health: {CurrentHealth}");
-
-            if (CurrentHealth <= 0)
-            {
-                Die();
-            }
-        }
-
-        public void Heal(float amount)
-        {
-            CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
-        }
-
-        private void Die()
-        {
-            Debug.Log("Player died!");
-            // Уничтожаем объект игрока
-            // Важно! PlayerHealth сам по себе не MonoBehaviour, так что нужно передавать объект в Player
+            Debug.Log("Игрок погиб! ");
+            SceneManager.LoadScene("GameOver"); // Загружаем сцену GameOver
         }
     }
 }

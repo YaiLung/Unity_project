@@ -1,33 +1,39 @@
 using UnityEngine;
+using System;
 
-namespace EnemyNamespace
+namespace EnemyNameSpace
 {
     public class Enemy : MonoBehaviour
     {
-        private EnemyMovement movementModule;
-        private EnemyHealth healthModule;
-        private EnemyAttack attackModule;
+        public static event Action<Enemy> OnEnemyDestroyed; //  Событие уничтожения
 
-        [SerializeField] private Transform shootPoint; // Точка выстрела
-        [SerializeField] private GameObject bulletPrefab; // Префаб пули
+        private EnemyMovement movementModule;
+
+        [SerializeField] private float moveSpeed = 2f;
 
         private void Awake()
         {
-            movementModule = new EnemyMovement(5f);
-            healthModule = new EnemyHealth(100f, this);
-            attackModule = new EnemyAttack(this, shootPoint, bulletPrefab, 1f); // Атака каждую 1 секунду
+            Transform player = GameObject.FindWithTag("Player")?.transform;
+
+            if (player != null)
+            {
+                movementModule = new EnemyMovement(transform, player, moveSpeed);
+            }
+            else
+            {
+                Debug.LogError("Player not found!");
+            }
         }
 
         private void Update()
         {
-            movementModule.Move(transform);
+            movementModule?.Move();
         }
 
-        public void TakeDamage(float damage)
+        private void OnDestroy()
         {
-            healthModule.TakeDamage(damage);
+            OnEnemyDestroyed?.Invoke(this); //    враг уничтожен
         }
     }
 }
-
 

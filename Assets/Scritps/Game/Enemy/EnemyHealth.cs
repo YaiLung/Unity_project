@@ -1,33 +1,29 @@
 using UnityEngine;
+using ScoreNameSpace;
 
-namespace EnemyNamespace
+namespace EnemyNameSpace
 {
-    public class EnemyHealth
+    public class EnemyHealth : Health
     {
-        private float currentHealth;
-        private Enemy enemy;
+        [SerializeField] private int startHealth = 10; 
+        [SerializeField] private int scoreValue = 10; // Очки за уничтожение врага
 
-        public EnemyHealth(float maxHealth, Enemy enemy)
+        private void Start()
         {
+            maxHealth = startHealth;
             currentHealth = maxHealth;
-            this.enemy = enemy;
         }
 
-        public void TakeDamage(float damage)
+        
+        protected override void Die()
         {
-            currentHealth -= damage;
-            Debug.Log($"Enemy took {damage} damage. Current health: {currentHealth}");
+            Debug.Log($"{gameObject.name} уничтожен!");
 
-            if (currentHealth <= 0)
-            {
-                Die();
-            }
-        }
+            // Начисляем очки 
+            ScoreManager.Instance.AddScore(scoreValue);
 
-        private void Die()
-        {
-            Debug.Log("Enemy died!");
-            GameObject.Destroy(enemy.gameObject); // Удаляем объект врага
+          
+            Destroy(gameObject);
         }
     }
 }

@@ -6,38 +6,23 @@ namespace PlayerNameSpace
     public class Player : MonoBehaviour
     {
         private PlayerMovement movementModule;
-        private PlayerHealth healthModule;
-        private PlayerAttack attackModule;
+        private PlayerShooting shootingModule;
         private PlayerInput playerInput;
 
-        [SerializeField] private Transform shootPoint; // Точка выстрела
-        [SerializeField] private GameObject bulletPrefab; // Префаб пули
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private GameObject bulletPrefab;
+        private float fireRate = 1f;
 
         private void Awake()
         {
             playerInput = new PlayerInput();
-            playerInput.GamePlay.Enable();
-
             movementModule = new PlayerMovement(playerInput, 5f);
-            healthModule = new PlayerHealth(100f);
-            attackModule = new PlayerAttack(shootPoint, bulletPrefab);
+            shootingModule = new PlayerShooting(playerInput, firePoint, bulletPrefab, fireRate);
         }
 
         private void Update()
         {
             movementModule.Move(transform);
-
-            if (playerInput.GamePlay.Attack.triggered)
-            {
-                attackModule.Attack();
-            }
-        }
-
-        public void TakeDamage(float amount) // Добавили метод
-        {
-            healthModule.TakeDamage(amount);
         }
     }
 }
-
-
