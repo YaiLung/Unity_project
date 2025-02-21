@@ -1,20 +1,44 @@
 using UnityEngine;
+using PlayerNameSpace;
 
-namespace EnemyNamespace
+namespace EnemyNameSpace
 {
     public class EnemyMovement
     {
-        private float speed;
+        private float _speed;  
+        private Transform enemyTransform;
+        private Transform playerTransform;
 
-        public EnemyMovement(float speed)
+        public EnemyMovement(Transform enemy, Transform player, float speed)
         {
-            this.speed = speed;
+            enemyTransform = enemy;
+            playerTransform = player;
+            _speed = speed;  
         }
 
-        public void Move(Transform transform)
+        public void Move()
         {
-            transform.position += Vector3.back * speed * Time.deltaTime; // Двигаем врага назад по Z
+            if (playerTransform == null) return;
+
+            // Двигаем врага назад по оси Z 
+            enemyTransform.position += Vector3.back * _speed * Time.deltaTime;
+
+            // Если враг находится достаточно близко к игроку по оси Z
+            if (Mathf.Abs(enemyTransform.position.z - playerTransform.position.z) < 0.1f)
+            {
+                // Наносим  урон игроку
+                if (playerTransform.TryGetComponent(out PlayerHealth playerHealth))
+                {
+                    playerHealth.TakeDamage(10);
+                }
+
+               
+                Object.Destroy(enemyTransform.gameObject);
+            }
         }
     }
 }
+
+
+
 
